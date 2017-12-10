@@ -1,0 +1,23 @@
+version: '3.3'
+services:
+    frontend:
+        build:
+            context: ./docker/node
+            args: {USER_ID: $USER_ID}
+        volumes: [".:/app"]
+        ports: ["35729:35729"]
+        command: ["npm", "run", "dev"]
+        working_dir: /app
+        networks: [default]
+
+    nginx:
+        image: nginx:1.13
+        volumes:
+            - .:/app
+            - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+        command: [nginx-debug, '-g', 'daemon off;']
+        ports: ["8080:8080"]
+        networks: [default]
+
+networks:
+    default: ~
